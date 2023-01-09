@@ -33,14 +33,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  late BookApi api;
+  late BookApi bookApi;
   Book? book;
+  late ColorApi colorApi;
+  int color = -1;
 
   void _incrementCounter() {
     setState(() {
       // _counter++;
       Future(() async {
-        List<Book?> reply = await api.search("Aaron");
+        List<Book?> reply = await bookApi.search("Aaron");
         book = reply[0];
       });
     });
@@ -49,7 +51,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    api = BookApi();
+    bookApi = BookApi();
+    colorApi = ColorApiImpl(updateColorHandler: updateColor);
+    ColorApi.setup(colorApi);
+  }
+
+  int updateColor(int color) {
+    this.color = color;
+    return color + 1000;
   }
 
   @override
@@ -62,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text('color: ${color}'),
             Text('book: ${book?.author} ${book?.title}'),
             const Text(
               'You have pushed the button this many times:',
@@ -79,5 +89,17 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+class ColorApiImpl implements ColorApi {
+  int Function(int) updateColorHandler;
+
+  ColorApiImpl({required this.updateColorHandler});
+
+  @override
+  int updateColor(int color) {
+    print('flutter updateColor $color');
+    return updateColorHandler.call(color);
   }
 }

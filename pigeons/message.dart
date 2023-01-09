@@ -10,9 +10,11 @@ class Book {
 @HostApi()
 abstract class BookApi {
   List<Book?> search(String keyword);
+
+  List<Book?> find(String keyword);
 }
 
 @FlutterApi()
 abstract class ColorApi {
-  void updateColor(int color);
+  int updateColor(int color);
 }

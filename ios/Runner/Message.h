@@ -23,8 +23,17 @@ NSObject<FlutterMessageCodec> *BookApiGetCodec(void);
 @protocol BookApi
 /// @return `nil` only when `error != nil`.
 - (nullable NSArray<Book *> *)searchKeyword:(NSString *)keyword error:(FlutterError *_Nullable *_Nonnull)error;
+/// @return `nil` only when `error != nil`.
+- (nullable NSArray<Book *> *)findKeyword:(NSString *)keyword error:(FlutterError *_Nullable *_Nonnull)error;
 @end
 
 extern void BookApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<BookApi> *_Nullable api);
 
+/// The codec used by ColorApi.
+NSObject<FlutterMessageCodec> *ColorApiGetCodec(void);
+
+@interface ColorApi : NSObject
+- (instancetype)initWithBinaryMessenger:(id<FlutterBinaryMessenger>)binaryMessenger;
+- (void)updateColorColor:(NSNumber *)color completion:(void(^)(NSNumber *_Nullable, NSError *_Nullable))completion;
+@end
 NS_ASSUME_NONNULL_END

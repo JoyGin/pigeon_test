@@ -80,7 +80,6 @@ class BookApi {
         code: 'channel-error',
         message: 'Unable to establish connection on channel.',
       );
-      // return [Book(title: "null", author: "null")];
     } else if (replyList.length > 1) {
       throw PlatformException(
         code: replyList[0]! as String,
@@ -94,6 +93,61 @@ class BookApi {
       );
     } else {
       return (replyList[0] as List<Object?>?)!.cast<Book?>();
+    }
+  }
+
+  Future<List<Book?>> find(String arg_keyword) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.BookApi.find', codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_keyword]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as List<Object?>?)!.cast<Book?>();
+    }
+  }
+}
+
+
+abstract class ColorApi {
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  int updateColor(int color);
+
+  static void setup(ColorApi? api, {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.ColorApi.updateColor', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.ColorApi.updateColor was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final int? arg_color = (args[0] as int?);
+          assert(arg_color != null, 'Argument for dev.flutter.pigeon.ColorApi.updateColor was null, expected non-null int.');
+          final int output = api.updateColor(arg_color!);
+          return output;
+        });
+      }
     }
   }
 }

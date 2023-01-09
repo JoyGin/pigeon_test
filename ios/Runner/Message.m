@@ -126,4 +126,55 @@ void BookApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<BookApi> 
       [channel setMessageHandler:nil];
     }
   }
+  {
+    FlutterBasicMessageChannel *channel =
+      [[FlutterBasicMessageChannel alloc]
+        initWithName:@"dev.flutter.pigeon.BookApi.find"
+        binaryMessenger:binaryMessenger
+        codec:BookApiGetCodec()];
+    if (api) {
+      NSCAssert([api respondsToSelector:@selector(findKeyword:error:)], @"BookApi api (%@) doesn't respond to @selector(findKeyword:error:)", api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        NSArray *args = message;
+        NSString *arg_keyword = GetNullableObjectAtIndex(args, 0);
+        FlutterError *error;
+        NSArray<Book *> *output = [api findKeyword:arg_keyword error:&error];
+        callback(wrapResult(output, error));
+      }];
+    }
+    else {
+      [channel setMessageHandler:nil];
+    }
+  }
 }
+NSObject<FlutterMessageCodec> *ColorApiGetCodec() {
+  static FlutterStandardMessageCodec *sSharedObject = nil;
+  sSharedObject = [FlutterStandardMessageCodec sharedInstance];
+  return sSharedObject;
+}
+
+@interface ColorApi ()
+@property (nonatomic, strong) NSObject<FlutterBinaryMessenger> *binaryMessenger;
+@end
+
+@implementation ColorApi
+
+- (instancetype)initWithBinaryMessenger:(NSObject<FlutterBinaryMessenger> *)binaryMessenger {
+  self = [super init];
+  if (self) {
+    _binaryMessenger = binaryMessenger;
+  }
+  return self;
+}
+- (void)updateColorColor:(NSNumber *)arg_color completion:(void(^)(NSNumber *_Nullable, NSError *_Nullable))completion {
+  FlutterBasicMessageChannel *channel =
+    [FlutterBasicMessageChannel
+      messageChannelWithName:@"dev.flutter.pigeon.ColorApi.updateColor"
+      binaryMessenger:self.binaryMessenger
+      codec:ColorApiGetCodec()];
+  [channel sendMessage:@[arg_color ?: [NSNull null]] reply:^(id reply) {
+    NSNumber *output = reply;
+    completion(output, nil);
+  }];
+}
+@end
