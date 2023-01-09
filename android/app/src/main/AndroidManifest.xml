@@ -1,8 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.test.pigeon_test">
    <application
+
         android:label="pigeon_test"
-        android:name="${applicationName}"
+        android:name="com.example.MyApplication"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

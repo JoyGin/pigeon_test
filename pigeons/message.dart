@@ -2,20 +2,17 @@
 
 import 'package:pigeon/pigeon.dart';
 
-class F2NMessage{
-  String? msg;
-}
-
-class N2FMessage{
-  String? msg2;
+class Book {
+  String? title;
+  String? author;
 }
 
 @HostApi()
-abstract class FlutterMessage{
-  void flutterSendMessage(F2NMessage msg);
+abstract class BookApi {
+  List<Book?> search(String keyword);
 }
 
 @FlutterApi()
-abstract class NativeMessage{
-  void nativeSendMessage(N2FMessage msg);
+abstract class ColorApi {
+  void updateColor(int color);
 }
