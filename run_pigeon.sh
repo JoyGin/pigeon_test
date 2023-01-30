@@ -2,18 +2,18 @@
 
 chmod a+rw "./ios"
 chmod a+rw "./android"
-androidPigeonPath="./android/app/src/main/java/com/example/pigeon"
+androidPigeonPath="./android/app/src/main/java/com/example/pigeon/"
 iosPigeonPath="./ios/Runner"
 androidPackage="com.example.pigeon"
 
-if [ ! -d  androidPigeonPath ]; then
+if [ ! -d  "$androidPigeonPath" ]; then
   echo 'Android 代码生成目录不存在，创建目录'
   mkdir -p "$androidPigeonPath"
 else
   echo '安卓代码生成目录已存在'
 fi
 
-if [ ! -d iosPigeonPath ]; then
+if [ ! -d "$iosPigeonPath" ]; then
   echo 'iOS 代码生成目录不存在，创建目录'
   mkdir -p "$iosPigeonPath"
 else
